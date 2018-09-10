@@ -1,0 +1,8 @@
+mode = "dev"
+
+[database]
+db_name = "luvletter"
+db_user = "root"
+db_pwd  = "12150112"
+db_host = "127.0.0.1"
+db_port = "3306"
