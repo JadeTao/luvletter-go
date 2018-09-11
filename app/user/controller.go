@@ -2,73 +2,54 @@ package user
 
 import (
 	"database/sql"
-	"encoding/json"
-	"fmt"
 	"luvletter/conf"
-	"luvletter/util"
+	"luvletter/custom"
 	"net/http"
-	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 )
 
-// Excuse error message
-type Excuse struct {
-	Error string `json:"error"`
-	ID    string `json:"id"`
-	Quote string `json:"quote"`
-}
-
 // Register 注册
 func Register(c echo.Context) error {
+	type user struct {
+		Account  string
+		NickName string
+		Password string
+	}
+	var (
+		u       user
+		resUser ResUser
+	)
+
+	if err := c.Bind(&u); err != nil {
+		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
+	}
 	db, err := sql.Open("mysql", conf.DBConfig)
-	util.Check(err)
+	stmt, err := db.Prepare(`INSERT INTO user (account, nickname, password) VALUES (?, ?, ?)`)
+	res, err := stmt.Exec(u.Account, u.NickName, u.Password)
+	defer stmt.Close()
+	_, err = res.LastInsertId()
+	if err != nil {
+		return custom.NewHTTPError(
+			http.StatusInternalServerError,
+			"error occurred when processing database",
+			err.Error(),
+		)
+	}
 
-	stmt, err := db.Prepare(`INSERT INTO user (avator, username, name, nickname, password, email, role_id) VALUES (?, ?, ?, ?, ?, ?, ?)`)
-	util.Check(err)
+	if resUser.Token, err = GenerateToken(resUser.Account, true); err != nil {
+		return custom.NewHTTPError(
+			http.StatusInternalServerError,
+			"error occurred when generating token",
+			err.Error(),
+		)
+	}
 
-	res, err := stmt.Exec(nil, "test", "foo", "jader", "112681", "test@go.com", "1")
-	util.Check(err)
-
-	id, err := res.LastInsertId()
-	util.Check(err)
-
-	fmt.Println(id)
-	stmt.Close()
-
-	return nil
+	resUser.Account = u.Account
+	resUser.Nickname = u.NickName
+	resUser.Avator.Valid = false
+	return c.JSON(http.StatusOK, resUser)
 }
-
-// Login logic
-// func Login(c echo.Context) error {
-// 	// username := c.FormValue("username")
-// 	// password := c.FormValue("password")
-// 	db, err := sql.Open("mysql", conf.DBConfig)
-// 	util.Check(err)
-
-// 	stmt, err := db.Prepare(`SELECT * FROM user`)
-// 	util.Check(err)
-// 	defer stmt.Close()
-
-// 	rows, err := stmt.Query()
-// 	util.Check(err)
-
-// 	defer rows.Close()
-
-// 	var (
-// 		ret User
-// 	)
-
-// 	const timeFormat = "2010-12-15 12:12:12"
-
-// 	for rows.Next() {
-// 		err = rows.Scan(&ret.ID, &ret.Avator, &ret.Username, &ret.Name, &ret.Nickname, &ret.Password, &ret.Email, &ret.RoleID, &ret.CreateTime, &ret.UpdateTime, &ret.LastLoginTime)
-// 		util.Check(err)
-// 	}
-
-// 	return c.JSON(http.StatusOK, ret)
-// }
 
 // Login logic
 func Login(c echo.Context) error {
@@ -84,43 +65,25 @@ func Login(c echo.Context) error {
 	)
 
 	err := c.Bind(&u)
-	util.Check(err)
+	if err != nil || u.Account == "" || u.Password == "" {
+		return echo.NewHTTPError(http.StatusBadRequest)
+	}
 
 	db, err := sql.Open("mysql", conf.DBConfig)
-	util.Check(err)
-
-	fmt.Println(u)
 	row := db.QueryRow(`SELECT avator,account,nickname FROM user WHERE account=?`, u.Account)
-	util.Check(err)
-
 	err = row.Scan(&res.Avator, &res.Account, &res.Nickname)
-	util.Check(err)
-	if res.Account != "" {
-		return c.JSON(http.StatusOK, res)
-	}
-	jsonByte, err := json.Marshal(&res)
-	fmt.Println(string(jsonByte))
 
-	if u.Account == "jon" && u.Password == "snow" {
+	if err == nil && res.Account != "" {
 
-		// Set custom claims
-		claims := &jwtCustomClaims{
-			"Jon Snow",
-			true,
-			jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
-			},
+		if res.Token, err = GenerateToken(res.Account, true); err != nil {
+			return custom.NewHTTPError(
+				http.StatusInternalServerError,
+				"error occurred when generating token",
+				err.Error(),
+			)
 		}
 
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-		// Generate encoded token and send it as response.
-		t, err := token.SignedString([]byte("secret"))
-		util.Check(err)
-
-		return c.JSON(http.StatusOK, echo.Map{
-			"token": t,
-		})
+		return c.JSON(http.StatusOK, res)
 	}
 
 	return echo.ErrUnauthorized

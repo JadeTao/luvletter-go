@@ -30,4 +30,5 @@ type ResUser struct {
 	Avator   util.NullString `json:"avator"`
 	Account  string          `json:"account"`
 	Nickname string          `json:"nickname"`
+	Token    string          `json:"token"`
 }
