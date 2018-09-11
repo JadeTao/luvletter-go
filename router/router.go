@@ -7,11 +7,10 @@ import (
 )
 
 // GETRouters RouterConfig for GET.
-var GETRouters = map[string]echo.HandlerFunc{
-	"/register": user.Register,
-}
+var GETRouters = map[string]echo.HandlerFunc{}
 
 // POSTRouters RouterConfig for POST.
 var POSTRouters = map[string]echo.HandlerFunc{
-	"/login": user.Login,
+	"/login":    user.Login,
+	"/register": user.Register,
 }

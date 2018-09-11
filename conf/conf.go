@@ -7,14 +7,6 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-var (
-	// Conf holds the global app config.
-	Conf              config
-	defaultConfigFile = "conf/conf.toml"
-	// DBConfig hmm
-	DBConfig string
-)
-
 type config struct {
 	Mode string
 	DB   database `toml:"database"`
@@ -27,6 +19,15 @@ type database struct {
 	DBHost string `toml:"db_host"`
 	DBPort string `toml:"db_port"`
 }
+
+var (
+	// Conf holds the global app config.
+	Conf              config
+	defaultConfigFile = "conf/conf.toml"
+	// DBConfig hmm
+	DBConfig string
+)
+
 
 // InitConfig initializes the app configuration by first setting defaults,
 // then overriding settings from the app config file, then overriding
