@@ -9,6 +9,7 @@ import (
 
 	"luvletter/conf"
 	"luvletter/router"
+	"luvletter/custom"
 )
 
 // Excuse error
@@ -22,6 +23,7 @@ func main() {
 	// Echo instance
 	e := echo.New()
 
+	e.HTTPErrorHandler = custom.HTTPErrorHandler
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
