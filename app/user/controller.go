@@ -11,24 +11,18 @@ import (
 
 // Register 注册
 func Register(c echo.Context) error {
-	type user struct {
-		Account  string
-		NickName string
-		Password string
-	}
+
 	var (
-		u       user
+		u       NewUser
 		resUser ResUser
 	)
 
 	if err := c.Bind(&u); err != nil {
 		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
 	}
-	db, err := sql.Open("mysql", conf.DBConfig)
-	stmt, err := db.Prepare(`INSERT INTO user (account, nickname, password) VALUES (?, ?, ?)`)
-	res, err := stmt.Exec(u.Account, u.NickName, u.Password)
-	defer stmt.Close()
-	_, err = res.LastInsertId()
+
+	err := AddUser(u)
+
 	if err != nil {
 		return custom.NewHTTPError(
 			http.StatusInternalServerError,
@@ -54,13 +48,8 @@ func Register(c echo.Context) error {
 // Login logic
 func Login(c echo.Context) error {
 
-	type user struct {
-		Account  string
-		Password string
-	}
-
 	var (
-		u   user
+		u   SimpleUser
 		res ResUser
 	)
 
@@ -73,8 +62,9 @@ func Login(c echo.Context) error {
 	row := db.QueryRow(`SELECT avator,account,nickname FROM user WHERE account=?`, u.Account)
 	err = row.Scan(&res.Avator, &res.Account, &res.Nickname)
 
-	if err == nil && res.Account != "" {
+	user, err := GetUserByAccount(u.Account)
 
+	if err == nil && user.Account != "" {
 		if res.Token, err = GenerateToken(res.Account, true); err != nil {
 			return custom.NewHTTPError(
 				http.StatusInternalServerError,
@@ -82,6 +72,9 @@ func Login(c echo.Context) error {
 				err.Error(),
 			)
 		}
+		res.Account = user.Account
+		res.Avator = user.Avator
+		res.Nickname = user.Nickname
 
 		return c.JSON(http.StatusOK, res)
 	}
