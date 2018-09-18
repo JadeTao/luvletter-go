@@ -43,7 +43,7 @@ func InitConfig(configFile string) error {
 		return errors.New("config decode err:" + err.Error())
 	}
 
-	DBConfig = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8", Conf.DB.DBUser, Conf.DB.DBPwd, Conf.DB.DBHost, Conf.DB.DBPort, Conf.DB.DBName)
+	DBConfig = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true", Conf.DB.DBUser, Conf.DB.DBPwd, Conf.DB.DBHost, Conf.DB.DBPort, Conf.DB.DBName)
 	return nil
 }
 
