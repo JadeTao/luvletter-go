@@ -7,9 +7,10 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
+	"luvletter/app/user"
 	"luvletter/conf"
-	"luvletter/router"
 	"luvletter/custom"
+	"luvletter/router"
 )
 
 // Excuse error
@@ -30,6 +31,7 @@ func main() {
 	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Skipper:    router.Skip,
 		SigningKey: []byte("secret"),
+		Claims:     &user.JwtCustomClaims{},
 	}))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -44,8 +46,6 @@ func main() {
 	for path, handler := range router.POSTRouters {
 		e.POST(path, handler)
 	}
-
-	fmt.Print(conf.DBConfig)
 
 	e.Logger.Fatal(e.Start(":4000"))
 }
