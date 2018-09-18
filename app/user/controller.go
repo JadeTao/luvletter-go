@@ -1,10 +1,10 @@
 package user
 
 import (
-	"database/sql"
-	"luvletter/conf"
+	"fmt"
 	"luvletter/custom"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo"
 )
@@ -15,13 +15,14 @@ func Register(c echo.Context) error {
 	var (
 		u       NewUser
 		resUser ResUser
+		trace   TrackAction
 	)
 
 	if err := c.Bind(&u); err != nil {
 		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
 	}
 
-	err := AddUser(u)
+	err := SaveUser(u)
 
 	if err != nil {
 		return custom.NewHTTPError(
@@ -42,6 +43,14 @@ func Register(c echo.Context) error {
 	resUser.Account = u.Account
 	resUser.Nickname = u.NickName
 	resUser.Avator.Valid = false
+
+	trace.Account = u.Account
+	trace.Time = time.Now().Format("2006-01-02 15:04:05")
+	trace.Action = "register"
+	trace.Extra.Valid = false
+	if err = TrackUserAction(trace); err != nil {
+
+	}
 	return c.JSON(http.StatusOK, resUser)
 }
 
@@ -49,18 +58,17 @@ func Register(c echo.Context) error {
 func Login(c echo.Context) error {
 
 	var (
-		u   SimpleUser
-		res ResUser
+		u     SimpleUser
+		res   ResUser
+		trace TrackAction
 	)
 
-	err := c.Bind(&u)
-	if err != nil || u.Account == "" || u.Password == "" {
+	if err := c.Bind(&u); err != nil {
+		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
+	}
+	if u.Account == "" || u.Password == "" {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
-
-	db, err := sql.Open("mysql", conf.DBConfig)
-	row := db.QueryRow(`SELECT avator,account,nickname FROM user WHERE account=?`, u.Account)
-	err = row.Scan(&res.Avator, &res.Account, &res.Nickname)
 
 	user, err := GetUserByAccount(u.Account)
 
@@ -76,7 +84,19 @@ func Login(c echo.Context) error {
 		res.Avator = user.Avator
 		res.Nickname = user.Nickname
 
+		trace.Action = "login"
+		trace.Account = user.Account
+		trace.Time = time.Now().Format("2006-01-02 15:04:05")
+		trace.Extra.Valid = false
+		if err = TrackUserAction(trace); err != nil {
+		}
 		return c.JSON(http.StatusOK, res)
+	} else if err != nil {
+		return custom.NewHTTPError(
+			http.StatusInternalServerError,
+			"error occurred when processing database",
+			err.Error(),
+		)
 	}
 
 	return echo.ErrUnauthorized

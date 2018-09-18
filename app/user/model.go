@@ -14,11 +14,12 @@ type User struct {
 	Name       string
 	Nickname   string
 	Password   string
-	CreateTime string
-	UpdateTime string
+	CreateTime int
+	UpdateTime int
 }
 
-type jwtCustomClaims struct {
+// JwtCustomClaims ...
+type JwtCustomClaims struct {
 	Name  string `json:"name"`
 	Admin bool   `json:"admin"`
 	jwt.StandardClaims
@@ -47,8 +48,9 @@ type ResUser struct {
 
 // TrackAction ...
 type TrackAction struct {
-	ID     int16
-	UserID int16
-	time   string
-	action string
+	ID      int16
+	Account string
+	Time    string
+	Action  string
+	Extra   util.NullString
 }

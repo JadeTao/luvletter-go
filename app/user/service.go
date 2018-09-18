@@ -11,7 +11,7 @@ import (
 // GenerateToken ...
 func GenerateToken(name string, admin bool) (string, error) {
 	// Set custom claims
-	claims := &jwtCustomClaims{
+	claims := &JwtCustomClaims{
 		"Jon Snow", // Name
 		true,       // Admin
 		jwt.StandardClaims{
@@ -25,8 +25,8 @@ func GenerateToken(name string, admin bool) (string, error) {
 	return token.SignedString([]byte("secret"))
 }
 
-// AddUser ...
-func AddUser(u NewUser) error {
+// SaveUser ...
+func SaveUser(u NewUser) error {
 	db, err := sql.Open("mysql", conf.DBConfig)
 	stmt, err := db.Prepare(`INSERT INTO user (account, nickname, password) VALUES (?, ?, ?)`)
 	res, err := stmt.Exec(u.Account, u.NickName, u.Password)
@@ -64,6 +64,11 @@ func UpdateUser(u User) error {
 }
 
 // TrackUserAction ...
-func TrackUserAction() {
-
+func TrackUserAction(track TrackAction) error {
+	db, err := sql.Open("mysql", conf.DBConfig)
+	stmt, err := db.Prepare(`INSERT INTO trace (account, time, action, extra) VALUES (?, ?, ?, ?)`)
+	res, err := stmt.Exec(track.Account, track.Time, track.Action, track.Extra)
+	defer stmt.Close()
+	_, err = res.LastInsertId()
+	return err
 }
