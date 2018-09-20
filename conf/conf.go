@@ -28,7 +28,6 @@ var (
 	DBConfig string
 )
 
-
 // InitConfig initializes the app configuration by first setting defaults,
 // then overriding settings from the app config file, then overriding
 // It returns an error if any.

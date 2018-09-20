@@ -1,14 +1,11 @@
 package main
 
 import (
-	"fmt"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
 	"luvletter/app/user"
-	"luvletter/conf"
 	"luvletter/custom"
 	"luvletter/router"
 )

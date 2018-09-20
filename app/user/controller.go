@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"luvletter/custom"
 	"net/http"
 	"time"
@@ -22,6 +21,8 @@ func Register(c echo.Context) error {
 		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
 	}
 
+	u.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+	u.UpdateTime = u.CreateTime
 	err := SaveUser(u)
 
 	if err != nil {
@@ -45,7 +46,7 @@ func Register(c echo.Context) error {
 	resUser.Avator.Valid = false
 
 	trace.Account = u.Account
-	trace.Time = time.Now().Format("2006-01-02 15:04:05")
+	trace.Time = u.CreateTime
 	trace.Action = "register"
 	trace.Extra.Valid = false
 	if err = TrackUserAction(trace); err != nil {

@@ -31,3 +31,11 @@ func (v NullString) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// Split ...
+func Split(s rune) bool {
+	if s == ',' {
+		return true
+	}
+	return false
+}

@@ -8,14 +8,14 @@ import (
 
 // User struc
 type User struct {
-	ID         int16 `json:"id"`
+	ID         int64 `json:"id"`
 	Avator     util.NullString
 	Account    string
 	Name       string
 	Nickname   string
 	Password   string
-	CreateTime int
-	UpdateTime int
+	CreateTime string
+	UpdateTime string
 }
 
 // JwtCustomClaims ...
@@ -36,6 +36,8 @@ type NewUser struct {
 	Account  string
 	NickName string
 	Password string
+	CreateTime string
+	UpdateTime string
 }
 
 // ResUser ...
