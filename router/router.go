@@ -8,7 +8,9 @@ import (
 )
 
 // GETRouters RouterConfig for GET.
-var GETRouters = map[string]echo.HandlerFunc{}
+var GETRouters = map[string]echo.HandlerFunc{
+	"/letter": letter.GetAll,
+}
 
 // POSTRouters RouterConfig for POST.
 var POSTRouters = map[string]echo.HandlerFunc{
