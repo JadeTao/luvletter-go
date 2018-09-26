@@ -1,10 +1,11 @@
 package letter
 
 import (
+	"luvletter/app/mood"
+	"luvletter/app/tag"
 	"luvletter/app/user"
 	"luvletter/custom"
 	"net/http"
-	"time"
 
 	"github.com/labstack/echo"
 )
@@ -28,21 +29,26 @@ func Save(c echo.Context) error {
 		trace user.TrackAction
 		err   error
 	)
-	trace.Account = l.Account
-	trace.Action = "save letter"
-	trace.Time = time.Now().Format("2006-01-02 15:04:05")
 
-	l.CreateTime = trace.Time
 	if err = c.Bind(&l); err != nil {
 		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
 	}
-	if err = SaveLetter(&l); err != nil {
+
+	trace, err = user.TrackUserAction(l.Account, "create letter", "")
+	l.CreateTime = trace.Time
+
+	err = SaveLetter(&l)
+	if err != nil {
 		return custom.NewHTTPError(
 			http.StatusInternalServerError,
 			"error occurred when saving letter",
 			err.Error(),
 		)
 	}
+
+	// mood、tag计数
+	_ = tag.AddCountInBatch(l.Tag)
+	_ = mood.AddCount(l.Mood)
 
 	return c.JSON(http.StatusOK, l)
 }

@@ -14,7 +14,6 @@ func Register(c echo.Context) error {
 	var (
 		u       NewUser
 		resUser ResUser
-		trace   TrackAction
 	)
 
 	if err := c.Bind(&u); err != nil {
@@ -45,11 +44,7 @@ func Register(c echo.Context) error {
 	resUser.Nickname = u.NickName
 	resUser.Avator.Valid = false
 
-	trace.Account = u.Account
-	trace.Time = u.CreateTime
-	trace.Action = "register"
-	trace.Extra.Valid = false
-	if err = TrackUserAction(trace); err != nil {
+	if _, err = TrackUserAction(resUser.Account, "register", ""); err != nil {
 
 	}
 	return c.JSON(http.StatusOK, resUser)
@@ -59,9 +54,8 @@ func Register(c echo.Context) error {
 func Login(c echo.Context) error {
 
 	var (
-		u     SimpleUser
-		res   ResUser
-		trace TrackAction
+		u   SimpleUser
+		res ResUser
 	)
 
 	if err := c.Bind(&u); err != nil {
@@ -85,11 +79,7 @@ func Login(c echo.Context) error {
 		res.Avator = user.Avator
 		res.Nickname = user.Nickname
 
-		trace.Action = "login"
-		trace.Account = user.Account
-		trace.Time = time.Now().Format("2006-01-02 15:04:05")
-		trace.Extra.Valid = false
-		if err = TrackUserAction(trace); err != nil {
+		if _, err = TrackUserAction(user.Account, "login", ""); err != nil {
 		}
 		return c.JSON(http.StatusOK, res)
 	} else if err != nil {
