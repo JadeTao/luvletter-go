@@ -1,6 +1,9 @@
 package router
 
 import (
+	"luvletter/app/mood"
+	"luvletter/app/tag"
+
 	"github.com/labstack/echo"
 
 	"luvletter/app/letter"
@@ -14,7 +17,9 @@ var GETRouters = map[string]echo.HandlerFunc{
 
 // POSTRouters RouterConfig for POST.
 var POSTRouters = map[string]echo.HandlerFunc{
-	"/login":       user.Login,
-	"/register":    user.Register,
-	"/letter/save": letter.Save,
+	"/login":    user.Login,
+	"/register": user.Register,
+	"/letter":   letter.Save,
+	"/tag":      tag.Save,
+	"/mood":     mood.Save,
 }

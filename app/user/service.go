@@ -29,9 +29,8 @@ func GenerateToken(name string, admin bool) (string, error) {
 func SaveUser(u NewUser) error {
 	db, err := sql.Open("mysql", conf.DBConfig)
 	stmt, err := db.Prepare(`INSERT INTO user (account, nickname, password) VALUES (?, ?, ?)`)
-	res, err := stmt.Exec(u.Account, u.NickName, u.Password)
+	_, err = stmt.Exec(u.Account, u.NickName, u.Password)
 	defer stmt.Close()
-	_, err = res.LastInsertId()
 	return err
 }
 
@@ -57,18 +56,24 @@ func GetUserByAccount(account string) (User, error) {
 func UpdateUser(u User) error {
 	db, err := sql.Open("mysql", conf.DBConfig)
 	stmt, err := db.Prepare(`UPDATE user SET avator=?,nickname=?,password=?,update_time=? WHERE id=?`)
-	res, err := stmt.Exec(u.Avator, u.Nickname, u.Password, u.UpdateTime, u.ID)
+	_, err = stmt.Exec(u.Avator, u.Nickname, u.Password, u.UpdateTime, u.ID)
 	defer stmt.Close()
-	_, err = res.LastInsertId()
 	return err
 }
 
 // TrackUserAction ...
-func TrackUserAction(track TrackAction) error {
+func TrackUserAction(account string, action string, extra string) (TrackAction, error) {
+	var (
+		track TrackAction
+	)
+	track.Account = account
+	track.Action = action
+	track.Time = time.Now().Format("2006-01-02 15:04:05")
+	track.Extra = ""
+
 	db, err := sql.Open("mysql", conf.DBConfig)
 	stmt, err := db.Prepare(`INSERT INTO trace (account, time, action, extra) VALUES (?, ?, ?, ?)`)
-	res, err := stmt.Exec(track.Account, track.Time, track.Action, track.Extra)
+	_, err = stmt.Exec(track.Account, track.Time, track.Action, track.Extra)
 	defer stmt.Close()
-	_, err = res.LastInsertId()
-	return err
+	return track, err
 }

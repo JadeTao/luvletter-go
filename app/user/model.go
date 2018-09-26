@@ -8,14 +8,15 @@ import (
 
 // User struc
 type User struct {
-	ID         int64 `json:"id"`
-	Avator     util.NullString
-	Account    string
-	Name       string
-	Nickname   string
-	Password   string
-	CreateTime string
-	UpdateTime string
+	ID            int64           `json:"id"`
+	Avator        util.NullString `json:"avator"`
+	Account       string          `json:"account"`
+	Name          string          `json:"name"`
+	Nickname      string          `json:"nickname"`
+	Password      string          `json:"password"`
+	CreateTime    string          `json:"createTime"`
+	UpdateTime    string          `json:"updateTime"`
+	LastLoginTime string          `json:"lastLoginTime"`
 }
 
 // JwtCustomClaims ...
@@ -27,17 +28,18 @@ type JwtCustomClaims struct {
 
 // SimpleUser ...
 type SimpleUser struct {
-	Account  string
-	Password string
+	Account       string `json:"account"`
+	Password      string `json:"password"`
+	LastLoginTime string `json:"lastLoginTime"`
 }
 
 // NewUser ...
 type NewUser struct {
-	Account  string
-	NickName string
-	Password string
-	CreateTime string
-	UpdateTime string
+	Account    string `json:"account"`
+	NickName   string `json:"nickname"`
+	Password   string `json:"password"`
+	CreateTime string `json:"createTime"`
+	UpdateTime string `json:"updateTime"`
 }
 
 // ResUser ...
@@ -54,5 +56,5 @@ type TrackAction struct {
 	Account string
 	Time    string
 	Action  string
-	Extra   util.NullString
+	Extra   string
 }
