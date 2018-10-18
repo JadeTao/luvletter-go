@@ -1,6 +1,7 @@
 package router
 
 import (
+	"luvletter/app/upload"
 	"luvletter/app/mood"
 	"luvletter/app/tag"
 
@@ -34,4 +35,5 @@ var POSTRouters = PrefixMapper(map[string]echo.HandlerFunc{
 	"/letter":   letter.Save,
 	"/tag":      tag.Save,
 	"/mood":     mood.Save,
+	"/upload":   upload.Avator,
 }, Prefix)
