@@ -30,7 +30,7 @@ func FindAll() ([]Letter, error) {
 			tag string
 		)
 		rows.Scan(&l.ID, &l.Account, &l.Nickname, &l.Content, &l.CreateTime, &l.Mood, &tag)
-		l.Tag = strings.FieldsFunc(tag, util.Split)
+		l.Tag = strings.FieldsFunc(tag, util.Split(','))
 		res = append(res, l)
 	}
 	return res, err

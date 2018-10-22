@@ -1,6 +1,8 @@
 package main
 
 import (
+	"luvletter/conf"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -43,6 +45,9 @@ func main() {
 	for path, handler := range router.POSTRouters {
 		e.POST(path, handler)
 	}
-
-	e.Logger.Fatal(e.Start(":80"))
+	port := ":4000"
+	if conf.Conf.Mode == "production" {
+		port = ":80"
+	}
+	e.Logger.Fatal(e.Start(port))
 }

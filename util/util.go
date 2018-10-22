@@ -1,8 +1,11 @@
 package util
 
 import (
+	"fmt"
 	"database/sql"
 	"encoding/json"
+	"path"
+	"strings"
 )
 
 // NullString handle null string
@@ -33,9 +36,34 @@ func (v NullString) UnmarshalJSON(data []byte) error {
 }
 
 // Split ...
-func Split(s rune) bool {
-	if s == ',' {
-		return true
+func Split(flag rune) func(rune) bool {
+	return func(s rune) bool {
+		if s == flag {
+			return true
+		}
+		return false
 	}
-	return false
+}
+
+// GetFileWithoutSuffix ...
+func GetFileWithoutSuffix(filename string) string {
+	suffix := path.Ext(filename)
+	return strings.TrimSuffix(filename, suffix)
+}
+
+// ComparePath ...
+func ComparePath(A string, B string) bool {
+	fmt.Println(A)
+	fmt.Println(B)
+	splitedA := strings.FieldsFunc(A, Split('/'))
+	splitedB := strings.FieldsFunc(B, Split('/'))
+
+	for index, valueA := range splitedA {
+		valueB := splitedB[index]
+		if valueA != "*" && valueB != "*" && valueA != valueB {
+			return false
+		}
+	}
+
+	return true
 }
