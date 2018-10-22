@@ -47,7 +47,7 @@ func Save(c echo.Context) error {
 	}
 
 	// mood、tag计数
-	_ = tag.AddCountInBatch(l.Tag)
+	_ = tag.AddCountInBatch(l.Tags)
 	_ = mood.AddCount(l.Mood)
 
 	return c.JSON(http.StatusOK, l)
