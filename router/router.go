@@ -1,7 +1,7 @@
 package router
 
 import (
-	"luvletter/app/upload"
+	"luvletter/app/avatar"
 	"luvletter/app/mood"
 	"luvletter/app/tag"
 
@@ -25,15 +25,16 @@ func PrefixMapper(router map[string]echo.HandlerFunc, prefix string) map[string]
 
 // GETRouters RouterConfig for GET.
 var GETRouters = PrefixMapper(map[string]echo.HandlerFunc{
-	"/letter": letter.GetAll,
+	"/letter":                  letter.GetAll,
+	"/account/:account/avatar": avatar.GetAvatar,
 }, Prefix)
 
 // POSTRouters RouterConfig for POST.
 var POSTRouters = PrefixMapper(map[string]echo.HandlerFunc{
-	"/login":    user.Login,
-	"/register": user.Register,
-	"/letter":   letter.Save,
-	"/tag":      tag.Save,
-	"/mood":     mood.Save,
-	"/upload":   upload.Avator,
+	"/login":                   user.Login,
+	"/register":                user.Register,
+	"/letter":                  letter.Save,
+	"/tag":                     tag.Save,
+	"/mood":                    mood.Save,
+	"/account/:account/avatar": avatar.UploadAvatar,
 }, Prefix)
