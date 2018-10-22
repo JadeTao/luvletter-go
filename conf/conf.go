@@ -8,8 +8,13 @@ import (
 )
 
 type config struct {
-	Mode string
-	DB   database `toml:"database"`
+	Mode   string
+	DB     database `toml:"database"`
+	Assets assets   `toml:"assets"`
+}
+
+type assets struct {
+	Avatar string `toml:"avatar"`
 }
 
 type database struct {
