@@ -9,7 +9,7 @@ import (
 // User struc
 type User struct {
 	ID            int64           `json:"id"`
-	Avator        util.NullString `json:"avator"`
+	Avatar        util.NullString `json:"avatar"`
 	Account       string          `json:"account"`
 	Name          string          `json:"name"`
 	Nickname      string          `json:"nickname"`
@@ -44,7 +44,7 @@ type NewUser struct {
 
 // ResUser ...
 type ResUser struct {
-	Avator   util.NullString `json:"avator"`
+	Avatar   util.NullString `json:"avatar"`
 	Account  string          `json:"account"`
 	Nickname string          `json:"nickname"`
 	Token    string          `json:"token"`

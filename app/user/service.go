@@ -38,8 +38,8 @@ func SaveUser(u NewUser) error {
 func GetUserByID(id int16) (User, error) {
 	var res User
 	db, err := sql.Open("mysql", conf.DBConfig)
-	row := db.QueryRow(`SELECT id, avator, account, nickname, password,create_time,update_time FROM user WHERE id=?`, id)
-	err = row.Scan(&res.ID, &res.Avator, &res.Account, &res.Nickname, &res.Password, &res.CreateTime, &res.UpdateTime)
+	row := db.QueryRow(`SELECT id, avatar, account, nickname, password,create_time,update_time FROM user WHERE id=?`, id)
+	err = row.Scan(&res.ID, &res.Avatar, &res.Account, &res.Nickname, &res.Password, &res.CreateTime, &res.UpdateTime)
 	return res, err
 }
 
@@ -47,16 +47,16 @@ func GetUserByID(id int16) (User, error) {
 func GetUserByAccount(account string) (User, error) {
 	var res User
 	db, err := sql.Open("mysql", conf.DBConfig)
-	row := db.QueryRow(`SELECT id, avator, account, nickname, password,create_time,update_time FROM user WHERE account=?`, account)
-	err = row.Scan(&res.ID, &res.Avator, &res.Account, &res.Nickname, &res.Password, &res.CreateTime, &res.UpdateTime)
+	row := db.QueryRow(`SELECT id, avatar, account, nickname, password,create_time,update_time FROM user WHERE account=?`, account)
+	err = row.Scan(&res.ID, &res.Avatar, &res.Account, &res.Nickname, &res.Password, &res.CreateTime, &res.UpdateTime)
 	return res, err
 }
 
 // UpdateUser ...
 func UpdateUser(u User) error {
 	db, err := sql.Open("mysql", conf.DBConfig)
-	stmt, err := db.Prepare(`UPDATE user SET avator=?,nickname=?,password=?,update_time=? WHERE id=?`)
-	_, err = stmt.Exec(u.Avator, u.Nickname, u.Password, u.UpdateTime, u.ID)
+	stmt, err := db.Prepare(`UPDATE user SET avatar=?,nickname=?,password=?,update_time=? WHERE id=?`)
+	_, err = stmt.Exec(u.Avatar, u.Nickname, u.Password, u.UpdateTime, u.ID)
 	defer stmt.Close()
 	return err
 }

@@ -42,7 +42,7 @@ func Register(c echo.Context) error {
 
 	resUser.Account = u.Account
 	resUser.Nickname = u.NickName
-	resUser.Avator.Valid = false
+	resUser.Avatar.Valid = false
 
 	if _, err = TrackUserAction(resUser.Account, "register", ""); err != nil {
 
@@ -76,7 +76,7 @@ func Login(c echo.Context) error {
 			)
 		}
 		res.Account = user.Account
-		res.Avator = user.Avator
+		res.Avatar = user.Avatar
 		res.Nickname = user.Nickname
 
 		if _, err = TrackUserAction(user.Account, "login", ""); err != nil {
