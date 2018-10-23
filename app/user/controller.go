@@ -45,7 +45,7 @@ func Register(c echo.Context) error {
 	resUser.Avatar.Valid = false
 
 	if _, err = TrackUserAction(resUser.Account, "register", ""); err != nil {
-
+		return custom.HTTPTrackError(err)
 	}
 	return c.JSON(http.StatusOK, resUser)
 }
@@ -80,6 +80,7 @@ func Login(c echo.Context) error {
 		res.Nickname = user.Nickname
 
 		if _, err = TrackUserAction(user.Account, "login", ""); err != nil {
+			return custom.HTTPTrackError(err)
 		}
 		return c.JSON(http.StatusOK, res)
 	} else if err != nil {

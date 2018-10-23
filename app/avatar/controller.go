@@ -5,6 +5,7 @@ import (
 	"io"
 	"luvletter/app/user"
 	"luvletter/conf"
+	"luvletter/custom"
 	"net/http"
 	"os"
 	"path"
@@ -56,7 +57,9 @@ func UploadAvatar(c echo.Context) error {
 		return err
 	}
 
-	user.TrackUserAction(account, "upload avatar", "")
+	if _, err = user.TrackUserAction(account, "upload avatar", ""); err != nil {
+		return custom.HTTPTrackError(err)
+	}
 
 	return c.JSON(http.StatusOK, nil)
 }

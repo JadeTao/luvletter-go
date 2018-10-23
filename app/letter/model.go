@@ -8,5 +8,5 @@ type Letter struct {
 	CreateTime string   `json:"createTime"`
 	Content    string   `json:"content"`
 	Mood       string   `json:"mood"`
-	Tags        []string `json:"tags"`
+	Tags       []string `json:"tags"`
 }

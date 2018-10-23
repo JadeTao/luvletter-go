@@ -12,13 +12,6 @@ import (
 	"luvletter/router"
 )
 
-// Excuse error
-type Excuse struct {
-	Error string `json:"error"`
-	ID    string `json:"id"`
-	Quote string `json:"quote"`
-}
-
 func main() {
 	// Echo instance
 	e := echo.New()

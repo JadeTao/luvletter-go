@@ -21,6 +21,9 @@ func Save(c echo.Context) error {
 	}
 
 	trace, err = user.TrackUserAction(t.Account, "create tag", "")
+	if err != nil {
+		return custom.HTTPTrackError(err)
+	}
 	t.CreateTime = trace.Time
 
 	err = SaveTag(&t)

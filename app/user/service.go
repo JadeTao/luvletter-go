@@ -73,6 +73,9 @@ func TrackUserAction(account string, action string, extra string) (TrackAction, 
 
 	db, err := sql.Open("mysql", conf.DBConfig)
 	stmt, err := db.Prepare(`INSERT INTO trace (account, time, action, extra) VALUES (?, ?, ?, ?)`)
+	if err != nil {
+		return track, err
+	}
 	_, err = stmt.Exec(track.Account, track.Time, track.Action, track.Extra)
 	defer stmt.Close()
 	return track, err

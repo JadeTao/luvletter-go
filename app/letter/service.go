@@ -26,7 +26,7 @@ func FindAll() ([]Letter, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var (
-			l   Letter
+			l    Letter
 			tags string
 		)
 		rows.Scan(&l.ID, &l.Account, &l.Nickname, &l.Content, &l.CreateTime, &l.Mood, &tags)

@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"database/sql"
 	"encoding/json"
 	"path"
@@ -53,8 +52,6 @@ func GetFileWithoutSuffix(filename string) string {
 
 // ComparePath ...
 func ComparePath(A string, B string) bool {
-	fmt.Println(A)
-	fmt.Println(B)
 	splitedA := strings.FieldsFunc(A, Split('/'))
 	splitedB := strings.FieldsFunc(B, Split('/'))
 

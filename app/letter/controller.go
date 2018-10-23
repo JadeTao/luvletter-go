@@ -35,6 +35,9 @@ func Save(c echo.Context) error {
 	}
 
 	trace, err = user.TrackUserAction(l.Account, "create letter", "")
+	if err != nil {
+		return custom.HTTPTrackError(err)
+	}
 	l.CreateTime = trace.Time
 
 	err = SaveLetter(&l)
