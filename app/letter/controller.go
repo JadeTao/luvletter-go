@@ -6,6 +6,7 @@ import (
 	"luvletter/app/user"
 	"luvletter/custom"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 )
@@ -16,8 +17,35 @@ func GetAll(c echo.Context) error {
 		all []Letter
 		err error
 	)
+	params := c.QueryParams()
+
+	offset := params.Get("offset")
+	position := params.Get("position")
+	if offset != "" && position != "" {
+		positionInt64, err := strconv.ParseInt(position, 10, 64)
+		offsetInt64, err := strconv.ParseInt(offset, 10, 64)
+		if err != nil {
+			return custom.BadRequestError("querying parameters error", err)
+		}
+		if all, err = FindPage(positionInt64, offsetInt64); err != nil {
+			return custom.BadRequestError("querying letters error", err)
+		}
+		return c.JSON(http.StatusOK, all)
+	}
 	if all, err = FindAll(); err != nil {
-		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when querying all letters", err.Error())
+		return custom.BadRequestError("querying letters error", err)
+	}
+	return c.JSON(http.StatusOK, all)
+}
+
+// GetPage ...
+func GetPage(c echo.Context) error {
+	var (
+		all []Letter
+		err error
+	)
+	if all, err = FindAll(); err != nil {
+		return custom.BadRequestError("querying all letters error", err)
 	}
 	return c.JSON(http.StatusOK, all)
 }
@@ -31,7 +59,7 @@ func Save(c echo.Context) error {
 	)
 
 	if err = c.Bind(&l); err != nil {
-		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
+		return custom.BadRequestError("binding parameters error", err)
 	}
 
 	trace, err = user.TrackUserAction(l.Account, "create letter", "")
@@ -42,11 +70,7 @@ func Save(c echo.Context) error {
 
 	err = SaveLetter(&l)
 	if err != nil {
-		return custom.NewHTTPError(
-			http.StatusInternalServerError,
-			"error occurred when saving letter",
-			err.Error(),
-		)
+		return custom.InternalServerError("saving letter error", err)
 	}
 
 	// mood、tag计数

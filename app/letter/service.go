@@ -23,6 +23,27 @@ func FindAll() ([]Letter, error) {
 	res := make([]Letter, 0)
 	db, err := sql.Open("mysql", conf.DBConfig)
 	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter`)
+	if err != nil {
+		return res, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var (
+			l    Letter
+			tags string
+		)
+		rows.Scan(&l.ID, &l.Account, &l.Nickname, &l.Content, &l.CreateTime, &l.Mood, &l.Tags)
+		l.Tags = strings.FieldsFunc(tags, util.Split(','))
+		res = append(res, l)
+	}
+	return res, err
+}
+
+// FindPage ...
+func FindPage(position int64, offset int64) ([]Letter, error) {
+	res := make([]Letter, 0)
+	db, err := sql.Open("mysql", conf.DBConfig)
+	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter LIMIT ?,?`, (position-1)*offset, offset)
 	defer rows.Close()
 	for rows.Next() {
 		var (
