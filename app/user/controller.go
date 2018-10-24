@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"luvletter/custom"
 	"net/http"
 	"time"
@@ -17,7 +18,7 @@ func Register(c echo.Context) error {
 	)
 
 	if err := c.Bind(&u); err != nil {
-		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
+		return custom.BadRequestError("binding parameters error", err)
 	}
 
 	u.CreateTime = time.Now().Format("2006-01-02 15:04:05")
@@ -25,19 +26,12 @@ func Register(c echo.Context) error {
 	err := SaveUser(u)
 
 	if err != nil {
-		return custom.NewHTTPError(
-			http.StatusInternalServerError,
-			"error occurred when processing database",
-			err.Error(),
-		)
+		return custom.InternalServerError("processing database error", err)
 	}
 
 	if resUser.Token, err = GenerateToken(resUser.Account, true); err != nil {
-		return custom.NewHTTPError(
-			http.StatusInternalServerError,
-			"error occurred when generating token",
-			err.Error(),
-		)
+		return custom.InternalServerError("generating token error", err)
+
 	}
 
 	resUser.Account = u.Account
@@ -59,21 +53,18 @@ func Login(c echo.Context) error {
 	)
 
 	if err := c.Bind(&u); err != nil {
-		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
+		return custom.BadRequestError("binding parameters error", err)
 	}
 	if u.Account == "" || u.Password == "" {
-		return echo.NewHTTPError(http.StatusBadRequest)
+		return custom.BadRequestError("empty account or password", errors.New("empty account or password"))
 	}
 
 	user, err := GetUserByAccount(u.Account)
 
 	if err == nil && user.Account != "" {
 		if res.Token, err = GenerateToken(res.Account, true); err != nil {
-			return custom.NewHTTPError(
-				http.StatusInternalServerError,
-				"error occurred when generating token",
-				err.Error(),
-			)
+			return custom.InternalServerError("generating token error", err)
+
 		}
 		res.Account = user.Account
 		res.Avatar = user.Avatar
@@ -84,11 +75,8 @@ func Login(c echo.Context) error {
 		}
 		return c.JSON(http.StatusOK, res)
 	} else if err != nil {
-		return custom.NewHTTPError(
-			http.StatusInternalServerError,
-			"error occurred when processing database",
-			err.Error(),
-		)
+		return custom.InternalServerError("processing database error", err)
+
 	}
 
 	return echo.ErrUnauthorized

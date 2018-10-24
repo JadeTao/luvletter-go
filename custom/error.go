@@ -12,3 +12,21 @@ func HTTPTrackError(err error) *HTTPError {
 		err.Error(),
 	)
 }
+
+// InternalServerError ...
+func InternalServerError(msg string, err error) *HTTPError {
+	return NewHTTPError(
+		http.StatusInternalServerError,
+		msg,
+		err.Error(),
+	)
+}
+
+// BadRequestError ...
+func BadRequestError(msg string, err error) *HTTPError {
+	return NewHTTPError(
+		http.StatusBadRequest,
+		msg,
+		err.Error(),
+	)
+}

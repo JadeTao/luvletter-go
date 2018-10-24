@@ -17,7 +17,7 @@ func Save(c echo.Context) error {
 	)
 
 	if err = c.Bind(&t); err != nil {
-		return custom.NewHTTPError(http.StatusBadRequest, "error occurred when binding parameters", err.Error())
+		return custom.BadRequestError("binding parameters error", err)
 	}
 
 	trace, err = user.TrackUserAction(t.Account, "create tag", "")
@@ -29,11 +29,7 @@ func Save(c echo.Context) error {
 	err = SaveTag(&t)
 
 	if err != nil {
-		return custom.NewHTTPError(
-			http.StatusInternalServerError,
-			"error occurred when saving tag",
-			err.Error(),
-		)
+		return custom.InternalServerError("saving tag error", err)
 	}
 
 	return c.JSON(http.StatusOK, t)
