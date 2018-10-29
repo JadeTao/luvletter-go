@@ -9,11 +9,11 @@ import (
 )
 
 // GenerateToken ...
-func GenerateToken(name string, admin bool) (string, error) {
+func GenerateToken(account string, admin bool) (string, error) {
 	// Set custom claims
 	claims := &JwtCustomClaims{
-		"Jon Snow", // Name
-		true,       // Admin
+		account, // Account
+		admin,   // Admin
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},

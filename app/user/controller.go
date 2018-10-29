@@ -62,9 +62,8 @@ func Login(c echo.Context) error {
 	user, err := GetUserByAccount(u.Account)
 
 	if err == nil && user.Account != "" {
-		if res.Token, err = GenerateToken(res.Account, true); err != nil {
+		if res.Token, err = GenerateToken(user.Account, true); err != nil {
 			return custom.InternalServerError("generating token error", err)
-
 		}
 		res.Account = user.Account
 		res.Avatar = user.Avatar
@@ -76,7 +75,6 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusOK, res)
 	} else if err != nil {
 		return custom.InternalServerError("processing database error", err)
-
 	}
 
 	return echo.ErrUnauthorized
