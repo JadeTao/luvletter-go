@@ -1,6 +1,7 @@
 package letter
 
 import (
+	"fmt"
 	"luvletter/app/mood"
 	"luvletter/app/tag"
 	"luvletter/app/user"
@@ -8,11 +9,12 @@ import (
 	"net/http"
 	"strconv"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 )
 
-// GetAll ...
-func GetAll(c echo.Context) error {
+// GetPage ...
+func GetPage(c echo.Context) error {
 	var (
 		all []Letter
 		err error
@@ -38,12 +40,18 @@ func GetAll(c echo.Context) error {
 	return c.JSON(http.StatusOK, all)
 }
 
-// GetPage ...
-func GetPage(c echo.Context) error {
+// GetAll ...
+func GetAll(c echo.Context) error {
 	var (
 		all []Letter
 		err error
 	)
+	account := c.Get("account").(*jwt.Token)
+	fmt.Println(account)
+	// trace, err = user.TrackUserAction(account, "create mood", "")
+	// if err != nil {
+	// 	return custom.HTTPTrackError(err)
+	// }
 	if all, err = FindAll(); err != nil {
 		return custom.BadRequestError("querying all letters error", err)
 	}
@@ -63,9 +71,7 @@ func Save(c echo.Context) error {
 	}
 
 	trace, err = user.TrackUserAction(l.Account, "create letter", "")
-	if err != nil {
-		return custom.HTTPTrackError(err)
-	}
+
 	l.CreateTime = trace.Time
 
 	err = SaveLetter(&l)
@@ -78,4 +84,25 @@ func Save(c echo.Context) error {
 	_ = mood.AddCount(l.Mood)
 
 	return c.JSON(http.StatusOK, l)
+}
+
+// GetLength ...
+func GetLength(c echo.Context) error {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*user.JwtCustomClaims)
+
+	_, err := user.TrackUserAction(claims.Account, "get the number of letter", "")
+	if err != nil {
+		return custom.HTTPTrackError(err)
+	}
+	type lengthRes struct {
+		Length int64 `json:"length"`
+	}
+	length, err := FindNumber()
+	fmt.Println(length)
+	if err != nil {
+		return custom.InternalServerError("querying letters number error", err)
+	}
+
+	return c.JSON(http.StatusOK, &lengthRes{length})
 }

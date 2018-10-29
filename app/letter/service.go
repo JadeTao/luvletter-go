@@ -56,3 +56,13 @@ func FindPage(position int64, offset int64) ([]Letter, error) {
 	}
 	return res, err
 }
+
+// FindNumber ...
+func FindNumber() (int64, error) {
+	var length int64
+	db, err := sql.Open("mysql", conf.DBConfig)
+	row := db.QueryRow(`SELECT COUNT(id) FROM letter`)
+
+	row.Scan(&length)
+	return length, err
+}

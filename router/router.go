@@ -26,6 +26,7 @@ func PrefixMapper(router map[string]echo.HandlerFunc, prefix string) map[string]
 // GETRouters RouterConfig for GET.
 var GETRouters = PrefixMapper(map[string]echo.HandlerFunc{
 	"/letter":                  letter.GetAll,
+	"/letter/length":           letter.GetLength,
 	"/account/:account/avatar": avatar.GetAvatar,
 }, Prefix)
 
