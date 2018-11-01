@@ -43,5 +43,6 @@ func main() {
 		port = ":80"
 	}
 	e.File("/", "public/index.html")
+	e.File("/favicon.ico", "public/favicon.ico")
 	e.Logger.Fatal(e.Start(port))
 }
