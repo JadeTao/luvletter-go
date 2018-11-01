@@ -42,5 +42,6 @@ func main() {
 	if conf.Conf.Mode == "production" {
 		port = ":80"
 	}
+	e.File("/", "public/index.html")
 	e.Logger.Fatal(e.Start(port))
 }

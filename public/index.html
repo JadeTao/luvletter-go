@@ -1,0 +1,28 @@
+<h1>TYJ ❤ WJ</h1>
+<h1 id="time"></h1>
+<style>
+  h1 {
+    text-align: center;
+    color: #fd0054;
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+<script>
+  window.onload = function () {
+    const oneMinute = 60
+    const oneHour = 60 * oneMinute
+    const oneDay = 24 * oneHour
+    const time = moment('2018-02-20', 'YYYY-MM-DD')
+    const container = document.querySelector('#time')
+    setInterval(function () {
+      const now = moment()
+      const duration = moment.duration(now.diff(time)).asSeconds()
+      const day = parseInt(duration / oneDay, 10) - 1
+      const hour = parseInt((duration - day * oneDay) / oneHour, 10)
+      const minute = parseInt((duration - day * oneDay - hour * oneHour) / oneMinute, 10)
+      const second = parseInt(duration - day * oneDay - hour * oneHour - minute * oneMinute, 10)
+      const tillNow = `${day}天${hour}小时${minute}分钟${second}秒`
+      container.innerText = tillNow
+    }, 1000)
+  }
+</script>
