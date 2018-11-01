@@ -20,11 +20,12 @@
     setInterval(function () {
       const now = moment()
       const duration = moment.duration(now.diff(time)).asSeconds()
-      const day = parseInt(duration / oneDay, 10) - 1
+      const day = parseInt(duration / oneDay, 10)
+      console.log(duration, duration - day * oneDay)
       const hour = parseInt((duration - day * oneDay) / oneHour, 10)
       const minute = parseInt((duration - day * oneDay - hour * oneHour) / oneMinute, 10)
       const second = parseInt(duration - day * oneDay - hour * oneHour - minute * oneMinute, 10)
-      const tillNow = `${day}天${hour}小时${minute}分钟${second}秒`
+      const tillNow = `${day - 1}天${hour}小时${minute}分钟${second}秒`
       container.innerText = tillNow
     }, 1000)
   }
