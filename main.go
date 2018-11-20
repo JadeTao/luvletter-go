@@ -2,6 +2,7 @@ package main
 
 import (
 	"luvletter/conf"
+	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -20,15 +21,19 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
+	}))
+
 	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		Skipper:    router.Skip,
 		SigningKey: []byte("secret"),
 		Claims:     &user.JwtCustomClaims{},
-	}))
-
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+		ErrorHandler: func(err error) error {
+			return custom.NewHTTPError(http.StatusUnauthorized, "missing or invalid token", "请重新登录")
+		},
 	}))
 
 	for path, handler := range router.GETRouters {
