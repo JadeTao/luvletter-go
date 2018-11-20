@@ -61,6 +61,10 @@ func Login(c echo.Context) error {
 
 	user, err := GetUserByAccount(u.Account)
 
+	if user.Password != u.Password {
+		return custom.NewHTTPError(http.StatusForbidden, "wrong user infomation", "请验证您的账户和密码")
+	}
+
 	if err == nil && user.Account != "" {
 		if res.Token, err = GenerateToken(user.Account, true); err != nil {
 			return custom.InternalServerError("generating token error", err)
@@ -72,6 +76,7 @@ func Login(c echo.Context) error {
 		if _, err = TrackUserAction(user.Account, "login", ""); err != nil {
 			return custom.HTTPTrackError(err)
 		}
+		UpdateLastLoginTime(u.Account)
 		return c.JSON(http.StatusOK, res)
 	} else if err != nil {
 		return custom.InternalServerError("processing database error", err)

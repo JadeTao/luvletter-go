@@ -61,6 +61,15 @@ func UpdateUser(u User) error {
 	return err
 }
 
+// UpdateLastLoginTime ...
+func UpdateLastLoginTime(account string) error {
+	db, err := sql.Open("mysql", conf.DBConfig)
+	stmt, err := db.Prepare(`UPDATE user SET last_login_time=? WHERE account=?`)
+	_, err = stmt.Exec(time.Now().Format("2006-01-02 15:04:05"), account)
+	defer stmt.Close()
+	return err
+}
+
 // TrackUserAction ...
 func TrackUserAction(account string, action string, extra string) (TrackAction, error) {
 	var (
