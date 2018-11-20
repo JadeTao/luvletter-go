@@ -46,12 +46,14 @@ func GetAll(c echo.Context) error {
 		all []Letter
 		err error
 	)
-	account := c.Get("account").(*jwt.Token)
-	fmt.Println(account)
-	// trace, err = user.TrackUserAction(account, "create mood", "")
-	// if err != nil {
-	// 	return custom.HTTPTrackError(err)
-	// }
+	userInfo := c.Get("user").(*jwt.Token)
+	claims := userInfo.Claims.(*user.JwtCustomClaims)
+	account := claims.Account
+
+	_, err = user.TrackUserAction(account, "create mood", "")
+	if err != nil {
+		return custom.HTTPTrackError(err)
+	}
 	if all, err = FindAll(); err != nil {
 		return custom.BadRequestError("querying all letters error", err)
 	}
@@ -88,10 +90,11 @@ func Save(c echo.Context) error {
 
 // GetLength ...
 func GetLength(c echo.Context) error {
-	token := c.Get("user").(*jwt.Token)
-	claims := token.Claims.(*user.JwtCustomClaims)
+	userInfo := c.Get("user").(*jwt.Token)
+	claims := userInfo.Claims.(*user.JwtCustomClaims)
+	account := claims.Account
 
-	_, err := user.TrackUserAction(claims.Account, "get the number of letter", "")
+	_, err := user.TrackUserAction(account, "get the number of letter", "")
 	if err != nil {
 		return custom.HTTPTrackError(err)
 	}
