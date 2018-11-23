@@ -9,3 +9,6 @@ db_port = "3306"
 
 [assets]
 avatar = "./assets/avatars/"
+
+[letter]
+page_size = 10

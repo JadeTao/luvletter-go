@@ -1,7 +1,6 @@
 package letter
 
 import (
-	"database/sql"
 	"luvletter/conf"
 	"luvletter/util"
 	"strings"
@@ -9,7 +8,7 @@ import (
 
 // SaveLetter ...
 func SaveLetter(l *Letter) error {
-	db, err := sql.Open("mysql", conf.DBConfig)
+	db := conf.GetDB()
 	stmt, err := db.Prepare(`INSERT INTO letter (account, content, mood, nickname, tags, create_time) VALUES (?, ?, ?, ?, ?, ?)`)
 	res, err := stmt.Exec(l.Account, l.Content, l.Mood, l.Nickname, strings.Join(l.Tags, ","), l.CreateTime)
 	defer stmt.Close()
@@ -21,7 +20,7 @@ func SaveLetter(l *Letter) error {
 // FindAll ...
 func FindAll() ([]Letter, error) {
 	res := make([]Letter, 0)
-	db, err := sql.Open("mysql", conf.DBConfig)
+	db := conf.GetDB()
 	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter`)
 	if err != nil {
 		return res, err
@@ -42,8 +41,8 @@ func FindAll() ([]Letter, error) {
 // FindPage ...
 func FindPage(position int64, offset int64) ([]Letter, error) {
 	res := make([]Letter, 0)
-	db, err := sql.Open("mysql", conf.DBConfig)
-	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter LIMIT ?,?`, (position-1)*offset, offset)
+	db := conf.GetDB()
+	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter LIMIT ?,?`, position-1, offset)
 	defer rows.Close()
 	for rows.Next() {
 		var (
@@ -60,9 +59,9 @@ func FindPage(position int64, offset int64) ([]Letter, error) {
 // FindNumber ...
 func FindNumber() (int64, error) {
 	var length int64
-	db, err := sql.Open("mysql", conf.DBConfig)
+	db := conf.GetDB()
 	row := db.QueryRow(`SELECT COUNT(id) FROM letter`)
 
-	row.Scan(&length)
+	err := row.Scan(&length)
 	return length, err
 }

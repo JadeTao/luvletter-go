@@ -11,10 +11,15 @@ type config struct {
 	Mode   string
 	DB     database `toml:"database"`
 	Assets assets   `toml:"assets"`
+	Letter letter   `toml:"letter"`
 }
 
 type assets struct {
 	Avatar string `toml:"avatar"`
+}
+
+type letter struct {
+	Size int64 `toml:"page_size"`
 }
 
 type database struct {
