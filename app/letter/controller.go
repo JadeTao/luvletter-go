@@ -5,6 +5,7 @@ import (
 	"luvletter/app/mood"
 	"luvletter/app/tag"
 	"luvletter/app/user"
+	"luvletter/conf"
 	"luvletter/custom"
 	"net/http"
 	"strconv"
@@ -23,6 +24,17 @@ func GetPage(c echo.Context) error {
 
 	offset := params.Get("offset")
 	position := params.Get("position")
+
+	userInfo := c.Get("user").(*jwt.Token)
+	claims := userInfo.Claims.(*user.JwtCustomClaims)
+	account := claims.Account
+
+	if offset == "" {
+		return custom.BadRequestError("querying parameters error", err)
+	}
+	if position == "" {
+		return custom.BadRequestError("querying parameters error", err)
+	}
 	if offset != "" && position != "" {
 		positionInt64, err := strconv.ParseInt(position, 10, 64)
 		offsetInt64, err := strconv.ParseInt(offset, 10, 64)
@@ -30,7 +42,11 @@ func GetPage(c echo.Context) error {
 			return custom.BadRequestError("querying parameters error", err)
 		}
 		if all, err = FindPage(positionInt64, offsetInt64); err != nil {
-			return custom.BadRequestError("querying letters error", err)
+			return custom.InternalServerError("querying letters error", err)
+		}
+		_, err = user.TrackUserAction(account, "query letter", fmt.Sprintf("查询从%s到%s的letter", position, offset))
+		if err != nil {
+			return custom.HTTPTrackError(err)
 		}
 		return c.JSON(http.StatusOK, all)
 	}
@@ -50,7 +66,7 @@ func GetAll(c echo.Context) error {
 	claims := userInfo.Claims.(*user.JwtCustomClaims)
 	account := claims.Account
 
-	_, err = user.TrackUserAction(account, "create mood", "")
+	_, err = user.TrackUserAction(account, "query letter", "")
 	if err != nil {
 		return custom.HTTPTrackError(err)
 	}
@@ -98,14 +114,19 @@ func GetLength(c echo.Context) error {
 	if err != nil {
 		return custom.HTTPTrackError(err)
 	}
-	type lengthRes struct {
-		Length int64 `json:"length"`
+	type result struct {
+		Size   int64 `json:"size"`
+		Number int64 `json:"number"`
 	}
 	length, err := FindNumber()
-	fmt.Println(length)
+
+	res := &result{
+		Size:   conf.Conf.Letter.Size,
+		Number: length/conf.Conf.Letter.Size + 1,
+	}
 	if err != nil {
 		return custom.InternalServerError("querying letters number error", err)
 	}
 
-	return c.JSON(http.StatusOK, &lengthRes{length})
+	return c.JSON(http.StatusOK, res)
 }
