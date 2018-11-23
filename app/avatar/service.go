@@ -1,7 +1,6 @@
 package avatar
 
 import (
-	"fmt"
 	"image/jpeg"
 	"image/png"
 	"io"
@@ -58,7 +57,7 @@ func UniqUserAvatar(account string) error {
 // GetAccountAvatarName ...
 func GetAccountAvatarName(account string) (string, error) {
 	files, err := ioutil.ReadDir(conf.Conf.Assets.Avatar)
-	fmt.Println(err)
+
 	if err != nil {
 		return "", err
 	}

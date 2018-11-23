@@ -1,7 +1,6 @@
 package avatar
 
 import (
-	"fmt"
 	"io"
 	"luvletter/app/user"
 	"luvletter/conf"
@@ -16,9 +15,8 @@ import (
 // GetAvatar ...
 func GetAvatar(c echo.Context) error {
 	account := c.Param("account")
-	fmt.Println(account)
+
 	accountAvatarName, err := GetAccountAvatarName(account)
-	fmt.Println(conf.Conf.Assets.Avatar + accountAvatarName)
 	if err != nil {
 		return err
 	}
