@@ -21,7 +21,7 @@ func SaveLetter(l *Letter) error {
 func FindAll() ([]Letter, error) {
 	res := make([]Letter, 0)
 	db := conf.GetDB()
-	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter`)
+	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter ORDER BY id DESC`)
 	if err != nil {
 		return res, err
 	}
@@ -42,7 +42,7 @@ func FindAll() ([]Letter, error) {
 func FindPage(position int64, offset int64) ([]Letter, error) {
 	res := make([]Letter, 0)
 	db := conf.GetDB()
-	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter LIMIT ?,?`, position-1, offset)
+	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter ORDER BY id DESC LIMIT ?,?`, position-1, offset)
 	defer rows.Close()
 	for rows.Next() {
 		var (
