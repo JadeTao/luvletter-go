@@ -25,17 +25,19 @@ func PrefixMapper(router map[string]echo.HandlerFunc, prefix string) map[string]
 
 // GETRouters RouterConfig for GET.
 var GETRouters = PrefixMapper(map[string]echo.HandlerFunc{
-	"/letter":                  letter.GetPage,
-	"/letter/length":           letter.GetLength,
-	"/account/:account/avatar": avatar.GetAvatar,
+	APILetters:       letter.GetPage,
+	APILettersLength: letter.GetLength,
+	APIMoods:         mood.GetAll,
+	APITags:          tag.GetAll,
+	APIAvatar:        avatar.GetAvatar,
 }, Prefix)
 
 // POSTRouters RouterConfig for POST.
 var POSTRouters = PrefixMapper(map[string]echo.HandlerFunc{
-	"/login":                   user.Login,
-	"/register":                user.Register,
-	"/letter":                  letter.Save,
-	"/tag":                     tag.Save,
-	"/mood":                    mood.Save,
-	"/account/:account/avatar": avatar.UploadAvatar,
+	APILogin:    user.Login,
+	APIRegister: user.Register,
+	APILetters:  letter.Save,
+	APITags:     tag.Save,
+	APIMoods:    mood.Save,
+	APIAvatar:   avatar.UploadAvatar,
 }, Prefix)

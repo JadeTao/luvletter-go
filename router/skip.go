@@ -9,7 +9,7 @@ import (
 // Skip ...
 func Skip(c echo.Context) bool {
 
-	white := []string{"/login", "/register", "/account/*/avatar"}
+	white := []string{APILogin, APIRegister, APIAvatar}
 
 	whiteWithPrefix := prefixSkipMapper(white, Prefix)
 	whiteWithPrefix = append(whiteWithPrefix, "/favicon.ico")
