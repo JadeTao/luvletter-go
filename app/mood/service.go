@@ -25,3 +25,22 @@ func AddCount(name string) error {
 	defer stmt.Close()
 	return err
 }
+
+// FindAll ...
+func FindAll() ([]string, error) {
+	res := make([]string, 0)
+	db := conf.GetDB()
+	rows, err := db.Query(`SELECT name FROM mood`)
+	if err != nil {
+		return res, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var (
+			l string
+		)
+		rows.Scan(&l)
+		res = append(res, l)
+	}
+	return res, err
+}

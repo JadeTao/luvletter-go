@@ -5,6 +5,7 @@ import (
 	"luvletter/custom"
 	"net/http"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 )
 
@@ -33,4 +34,24 @@ func Save(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, m)
+}
+
+// GetAll ...
+func GetAll(c echo.Context) error {
+	var (
+		all []string
+		err error
+	)
+	userInfo := c.Get("user").(*jwt.Token)
+	claims := userInfo.Claims.(*user.JwtCustomClaims)
+	account := claims.Account
+
+	_, err = user.TrackUserAction(account, "get moods", "")
+	if err != nil {
+		return custom.HTTPTrackError(err)
+	}
+	if all, err = FindAll(); err != nil {
+		return custom.BadRequestError("get all moods error", err)
+	}
+	return c.JSON(http.StatusOK, all)
 }
