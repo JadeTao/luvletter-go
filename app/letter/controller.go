@@ -66,12 +66,12 @@ func GetAll(c echo.Context) error {
 	claims := userInfo.Claims.(*user.JwtCustomClaims)
 	account := claims.Account
 
-	_, err = user.TrackUserAction(account, "query letter", "")
+	_, err = user.TrackUserAction(account, "get letters", "")
 	if err != nil {
 		return custom.HTTPTrackError(err)
 	}
 	if all, err = FindAll(); err != nil {
-		return custom.BadRequestError("querying all letters error", err)
+		return custom.BadRequestError("get all letters error", err)
 	}
 	return c.JSON(http.StatusOK, all)
 }
@@ -123,6 +123,9 @@ func GetLength(c echo.Context) error {
 	res := &result{
 		Size:   conf.Conf.Letter.Size,
 		Number: length/conf.Conf.Letter.Size + 1,
+	}
+	if length%conf.Conf.Letter.Size == 0 {
+		res.Number = length / conf.Conf.Letter.Size
 	}
 	if err != nil {
 		return custom.InternalServerError("querying letters number error", err)

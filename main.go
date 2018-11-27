@@ -32,7 +32,7 @@ func main() {
 		SigningKey: []byte("secret"),
 		Claims:     &user.JwtCustomClaims{},
 		ErrorHandler: func(err error) error {
-			return custom.NewHTTPError(http.StatusUnauthorized, "missing or invalid token", "请重新登录")
+			return custom.NewHTTPError(http.StatusUnauthorized, "missing or invalid token", "请检查登录状态或重新登录")
 		},
 	}))
 
