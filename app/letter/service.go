@@ -10,7 +10,13 @@ import (
 func SaveLetter(l *Letter) error {
 	db := conf.GetDB()
 	stmt, err := db.Prepare(`INSERT INTO letter (account, content, mood, nickname, tags, create_time) VALUES (?, ?, ?, ?, ?, ?)`)
+	if err != nil {
+		return err
+	}
 	res, err := stmt.Exec(l.Account, l.Content, l.Mood, l.Nickname, strings.Join(l.Tags, ","), l.CreateTime)
+	if err != nil {
+		return err
+	}
 	defer stmt.Close()
 	id, err := res.LastInsertId()
 	l.ID = id
@@ -43,6 +49,9 @@ func FindPage(position int64, offset int64) ([]Letter, error) {
 	res := make([]Letter, 0)
 	db := conf.GetDB()
 	rows, err := db.Query(`SELECT id, account, nickname, content, create_time, mood, tags FROM letter ORDER BY id DESC LIMIT ?,?`, position-1, offset)
+	if err != nil {
+		return nil, err
+	}
 	defer rows.Close()
 	for rows.Next() {
 		var (

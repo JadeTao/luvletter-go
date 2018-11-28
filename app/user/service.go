@@ -28,6 +28,9 @@ func GenerateToken(account string, admin bool) (string, error) {
 func SaveUser(u NewUser) error {
 	db := conf.GetDB()
 	stmt, err := db.Prepare(`INSERT INTO user (account, nickname, password) VALUES (?, ?, ?)`)
+	if err != nil {
+		return err
+	}
 	_, err = stmt.Exec(u.Account, u.NickName, u.Password)
 	defer stmt.Close()
 	return err
@@ -55,6 +58,9 @@ func GetUserByAccount(account string) (User, error) {
 func UpdateUser(u User) error {
 	db := conf.GetDB()
 	stmt, err := db.Prepare(`UPDATE user SET avatar=?,nickname=?,password=?,update_time=? WHERE id=?`)
+	if err != nil {
+		return err
+	}
 	_, err = stmt.Exec(u.Avatar, u.Nickname, u.Password, u.UpdateTime, u.ID)
 	defer stmt.Close()
 	return err
@@ -64,6 +70,9 @@ func UpdateUser(u User) error {
 func UpdateLastLoginTime(account string) error {
 	db := conf.GetDB()
 	stmt, err := db.Prepare(`UPDATE user SET last_login_time=? WHERE account=?`)
+	if err != nil {
+		return err
+	}
 	_, err = stmt.Exec(time.Now().Format("2006-01-02 15:04:05"), account)
 	defer stmt.Close()
 	return err

@@ -10,7 +10,13 @@ import (
 func SaveTag(t *Tag) error {
 	db := conf.GetDB()
 	stmt, err := db.Prepare(`INSERT INTO tag (account, name, count, create_time) VALUES (?, ?, ?, ?)`)
+	if err != nil {
+		return err
+	}
 	res, err := stmt.Exec(t.Account, t.Name, 1, t.CreateTime)
+	if err != nil {
+		return err
+	}
 	defer stmt.Close()
 	id, err := res.LastInsertId()
 	t.ID = id
@@ -21,6 +27,9 @@ func SaveTag(t *Tag) error {
 func AddCount(name string) error {
 	db := conf.GetDB()
 	stmt, err := db.Prepare(`UPDATE tag SET count=count+1, last_used_time=? WHERE name=?`)
+	if err != nil {
+		return err
+	}
 	_, err = stmt.Exec(time.Now().Format("2006-01-02 15:04:05"), name)
 	defer stmt.Close()
 	return err
@@ -30,6 +39,9 @@ func AddCount(name string) error {
 func AddCountInBatch(names []string) error {
 	db := conf.GetDB()
 	stmt, err := db.Prepare(`UPDATE tag SET count=count+1, last_used_time=? WHERE name IN (?)`)
+	if err != nil {
+		return err
+	}
 	_, err = stmt.Exec(time.Now().Format("2006-01-02 15:04:05"), strings.Join(names, ","))
 	defer stmt.Close()
 	return err
