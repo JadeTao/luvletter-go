@@ -12,7 +12,7 @@ func SaveMood(m *Mood) error {
 	if err != nil {
 		return err
 	}
-	res, err := stmt.Exec(m.Account, m.Name, 0, m.CreateTime)
+	res, err := stmt.Exec(m.Account, m.Name, 0, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}

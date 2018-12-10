@@ -1,7 +1,6 @@
 package main
 
 import (
-	"luvletter/conf"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -44,9 +43,7 @@ func main() {
 		e.POST(path, handler)
 	}
 	port := ":4000"
-	if conf.Conf.Mode == "production" {
-		port = ":80"
-	}
+
 	e.File("/", "public/index.html")
 	e.File("/favicon.ico", "public/favicon.ico")
 	e.Logger.Fatal(e.Start(port))
