@@ -22,7 +22,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://jadert.cn", "http://www.jadert.cn", "https://jadert.cn", "http://www.jadert.cn"},
+		AllowOrigins: []string{"http://jadert.cn", "http://www.jadert.cn", "https://jadert.cn", "http://www.jadert.cn", "*"},
 		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
 	}))
 
