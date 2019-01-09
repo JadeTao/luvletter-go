@@ -1,7 +1,7 @@
 package user
 
 import (
-	"luvletter/util"
+	"github.com/JadeTao/luvletter-go/util"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )

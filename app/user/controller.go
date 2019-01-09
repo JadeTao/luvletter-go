@@ -2,9 +2,10 @@ package user
 
 import (
 	"errors"
-	"luvletter/custom"
 	"net/http"
 	"time"
+
+	"github.com/JadeTao/luvletter-go/custom"
 
 	"github.com/labstack/echo"
 )

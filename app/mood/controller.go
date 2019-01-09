@@ -1,9 +1,10 @@
 package mood
 
 import (
-	"luvletter/app/user"
-	"luvletter/custom"
 	"net/http"
+
+	"github.com/JadeTao/luvletter-go/app/user"
+	"github.com/JadeTao/luvletter-go/custom"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"

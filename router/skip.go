@@ -1,7 +1,7 @@
 package router
 
 import (
-	"luvletter/util"
+	"github.com/JadeTao/luvletter-go/util"
 
 	"github.com/labstack/echo"
 )

@@ -7,9 +7,9 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
-	"luvletter/app/user"
-	"luvletter/custom"
-	"luvletter/router"
+	"github.com/JadeTao/luvletter-go/app/user"
+	"github.com/JadeTao/luvletter-go/custom"
+	"github.com/JadeTao/luvletter-go/router"
 )
 
 func main() {

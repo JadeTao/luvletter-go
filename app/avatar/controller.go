@@ -2,12 +2,13 @@ package avatar
 
 import (
 	"io"
-	"luvletter/app/user"
-	"luvletter/conf"
-	"luvletter/custom"
 	"net/http"
 	"os"
 	"path"
+
+	"github.com/JadeTao/luvletter-go/app/user"
+	"github.com/JadeTao/luvletter-go/conf"
+	"github.com/JadeTao/luvletter-go/custom"
 
 	"github.com/labstack/echo"
 )

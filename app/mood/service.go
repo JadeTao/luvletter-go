@@ -1,8 +1,9 @@
 package mood
 
 import (
-	"luvletter/conf"
 	"time"
+
+	"github.com/JadeTao/luvletter-go/conf"
 )
 
 // SaveMood ...

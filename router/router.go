@@ -1,14 +1,14 @@
 package router
 
 import (
-	"luvletter/app/avatar"
-	"luvletter/app/mood"
-	"luvletter/app/tag"
+	"github.com/JadeTao/luvletter-go/app/avatar"
+	"github.com/JadeTao/luvletter-go/app/mood"
+	"github.com/JadeTao/luvletter-go/app/tag"
 
 	"github.com/labstack/echo"
 
-	"luvletter/app/letter"
-	"luvletter/app/user"
+	"github.com/JadeTao/luvletter-go/app/letter"
+	"github.com/JadeTao/luvletter-go/app/user"
 )
 
 // Prefix ...

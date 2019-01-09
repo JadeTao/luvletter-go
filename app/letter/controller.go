@@ -2,13 +2,14 @@ package letter
 
 import (
 	"fmt"
-	"luvletter/app/mood"
-	"luvletter/app/tag"
-	"luvletter/app/user"
-	"luvletter/conf"
-	"luvletter/custom"
 	"net/http"
 	"strconv"
+
+	"github.com/JadeTao/luvletter-go/app/mood"
+	"github.com/JadeTao/luvletter-go/app/tag"
+	"github.com/JadeTao/luvletter-go/app/user"
+	"github.com/JadeTao/luvletter-go/conf"
+	"github.com/JadeTao/luvletter-go/custom"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"

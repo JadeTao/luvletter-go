@@ -1,8 +1,9 @@
 package custom
 
 import (
-	"luvletter/conf"
 	"net/http"
+
+	"github.com/JadeTao/luvletter-go/conf"
 
 	"github.com/labstack/echo"
 )

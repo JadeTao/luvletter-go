@@ -1,9 +1,10 @@
 package letter
 
 import (
-	"luvletter/conf"
-	"luvletter/util"
 	"strings"
+
+	"github.com/JadeTao/luvletter-go/conf"
+	"github.com/JadeTao/luvletter-go/util"
 )
 
 // SaveLetter ...

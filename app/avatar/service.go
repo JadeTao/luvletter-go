@@ -5,9 +5,10 @@ import (
 	"image/png"
 	"io"
 	"io/ioutil"
-	"luvletter/conf"
-	"luvletter/util"
 	"os"
+
+	"github.com/JadeTao/luvletter-go/conf"
+	"github.com/JadeTao/luvletter-go/util"
 
 	"github.com/chai2010/webp"
 )

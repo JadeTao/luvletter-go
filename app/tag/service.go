@@ -1,9 +1,10 @@
 package tag
 
 import (
-	"luvletter/conf"
 	"strings"
 	"time"
+
+	"github.com/JadeTao/luvletter-go/conf"
 )
 
 // SaveTag ...
