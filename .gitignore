@@ -1,3 +1,6 @@
 .vscode
 debug
 main
+*.jpg
+*.jpeg
+*.png
